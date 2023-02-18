@@ -1,5 +1,5 @@
 service: activity-log
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -7,11 +7,16 @@ provider:
 
 functions:
   hello:
-    handler: handler.hello
+    handler: src/handler.hello
     events:
       - httpApi:
           path: /
           method: get
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-esbuild
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 1337
