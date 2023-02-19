@@ -18,3 +18,4 @@ services:
       - 3308:3306
     volumes:
       - "activity_log_mysql_data:/var/lib/mysql"
+      - "./prisma/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql"
