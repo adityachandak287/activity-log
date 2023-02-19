@@ -8,4 +8,5 @@ jspm_packages
 .esbuild
 
 *.env
+*.env.*
 !*.env.sample

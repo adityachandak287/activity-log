@@ -1,6 +1,6 @@
 # Activity Log
 
-Simple HTTP endpoint to maintain an activity log. Deployed on AWS Lambda.
+Simple HTTP endpoint to maintain a log of activities. Deployed on AWS Lambda using Serverless Framework v3.
 
 ## Setup
 
@@ -21,11 +21,23 @@ $ serverless deploy
 **Invoke the function locally.**
 
 ```shell
-serverless invoke local --function hello
+serverless invoke local --function logActivity
 ```
 
-**Invoke the function**
+## Resources
 
-```shell
-curl https://xxxxxxxxx.execute-api.us-east-1.amazonaws.com/
+### Creating minimal AWS IAM policy
+
+[Serverless Permission Policy Generator](https://open-sl.github.io/serverless-permission-generator)
+
+NOTE: this is not perfect, had to add the following policies based on errors while running `serverless deploy`
+
+```
+cloudformation:CreateChangeSet
+cloudformation:DeleteChangeSet
+cloudformation:ExecuteChangeSet
+lambda:TagResource
+logs:TagResource
+apigateway:TagResource
+arn:aws:apigateway:*::/tags*
 ```

@@ -6,9 +6,19 @@ useDotenv: true
 provider:
   name: aws
   runtime: nodejs18.x
+  region: ap-south-1
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
     SECRET: ${env:SECRET}
+
+# This helps to reduce package size: https://www.prisma.io/docs/guides/deployment/deployment-guides/use-prisma-with-serverless-framework#reduce-the-package-footprint
+package:
+  patterns:
+    - "!node_modules/.prisma/client/libquery_engine-*"
+    - "node_modules/.prisma/client/libquery_engine-rhel-*"
+    - "node_modules/.prisma/client/schema.prisma"
+    - "!node_modules/prisma/libquery_engine-*"
+    - "!node_modules/@prisma/engines/**"
 
 functions:
   logActivity:
