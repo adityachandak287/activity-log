@@ -40,46 +40,46 @@ export const logActivity = async (
 
     const newActivityTimestamp = new Date(reqBody.timestamp || Date.now());
 
-    const lastActivity = await dbClient.activity.findFirst({
-      orderBy: {
-        timestamp: "desc",
-      },
-      take: 1,
-      where: {
-        name: reqBody.name,
-        timestamp: {
-          lte: newActivityTimestamp,
+    const [lastActivity, activityCount, newActivity] = await Promise.all([
+      dbClient.activity.findFirst({
+        orderBy: {
+          timestamp: "desc",
         },
-      },
-      select: {
-        id: true,
-        timestamp: true,
-      },
-    });
-
-    const activityTrend = await dbClient.activity.count({
-      where: {
-        name: reqBody.name,
-        timestamp: {
-          gte: subDays(newActivityTimestamp, config.SUMMARY_WINDOW_DAYS),
-          lte: newActivityTimestamp,
+        take: 1,
+        where: {
+          name: reqBody.name,
+          timestamp: {
+            lte: newActivityTimestamp,
+          },
         },
-      },
-    });
-
-    const newActivity = await dbClient.activity.create({
-      data: {
-        name: reqBody.name,
-        count: reqBody.count,
-        timestamp: newActivityTimestamp,
-      },
-      select: {
-        id: true,
-        name: true,
-        count: true,
-        timestamp: true,
-      },
-    });
+        select: {
+          id: true,
+          timestamp: true,
+        },
+      }),
+      dbClient.activity.count({
+        where: {
+          name: reqBody.name,
+          timestamp: {
+            gte: subDays(newActivityTimestamp, config.SUMMARY_WINDOW_DAYS),
+            lte: newActivityTimestamp,
+          },
+        },
+      }),
+      dbClient.activity.create({
+        data: {
+          name: reqBody.name,
+          count: reqBody.count,
+          timestamp: newActivityTimestamp,
+        },
+        select: {
+          id: true,
+          name: true,
+          count: true,
+          timestamp: true,
+        },
+      }),
+    ]);
 
     const timeSince = lastActivity?.timestamp
       ? formatDistance(lastActivity.timestamp, newActivity.timestamp, {
@@ -94,7 +94,8 @@ export const logActivity = async (
         ...lastActivity,
         since: timeSince,
       },
-      trend: `${activityTrend + 1} in last ${config.SUMMARY_WINDOW_DAYS} days`,
+      // Adding 1 to include the activity that was just created
+      trend: `${activityCount + 1} in last ${config.SUMMARY_WINDOW_DAYS} days`,
     };
 
     return {
