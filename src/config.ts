@@ -1,4 +1,4 @@
 export const config = {
-  databaseUrl: process.env.DATABASE_URL,
-  secret: process.env.SECRET,
+  DATABASE_URL: process.env.DATABASE_URL,
+  SECRET: process.env.SECRET,
 };

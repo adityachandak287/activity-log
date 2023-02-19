@@ -26,7 +26,7 @@ export const logActivity = async (
     const reqBody = validationRes.data;
 
     const secretHeader = event.headers["x-secret"];
-    if (secretHeader !== config.secret) {
+    if (secretHeader !== config.SECRET) {
       return {
         statusCode: 401,
         body: JSON.stringify({

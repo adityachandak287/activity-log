@@ -11,7 +11,7 @@ export const getDatabaseClient = async () => {
   dbClient = new PrismaClient({
     datasources: {
       db: {
-        url: config.databaseUrl,
+        url: config.DATABASE_URL,
       },
     },
   });
