@@ -7,9 +7,11 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ap-south-1
+  memorySize: 512
   environment:
     DATABASE_URL: ${env:DATABASE_URL}
     SECRET: ${env:SECRET}
+    SUMMARY_WINDOW_DAYS: ${env:SUMMARY_WINDOW_DAYS}
 
 # This helps to reduce package size: https://www.prisma.io/docs/guides/deployment/deployment-guides/use-prisma-with-serverless-framework#reduce-the-package-footprint
 package:
