@@ -41,3 +41,7 @@ logs:TagResource
 apigateway:TagResource
 arn:aws:apigateway:*::/tags*
 ```
+
+### Triggering endpoint with different payloads from shortcuts on phone homepage
+
+[HTTP Shortcuts](https://http-shortcuts.rmy.ch/)
