@@ -1,4 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { formatDistance, subDays } from "date-fns";
 import { ActivitySchema } from "./activity-schema";
 import { config } from "./config";
 import { getDatabaseClient } from "./db";
@@ -37,6 +38,8 @@ export const logActivity = async (
 
     const dbClient = await getDatabaseClient();
 
+    const newActivityTimestamp = new Date(reqBody.timestamp || Date.now());
+
     const lastActivity = await dbClient.activity.findFirst({
       orderBy: {
         timestamp: "desc",
@@ -44,6 +47,9 @@ export const logActivity = async (
       take: 1,
       where: {
         name: reqBody.name,
+        timestamp: {
+          lte: newActivityTimestamp,
+        },
       },
       select: {
         id: true,
@@ -51,11 +57,21 @@ export const logActivity = async (
       },
     });
 
+    const activityTrend = await dbClient.activity.count({
+      where: {
+        name: reqBody.name,
+        timestamp: {
+          gte: subDays(newActivityTimestamp, config.SUMMARY_WINDOW_DAYS),
+          lte: newActivityTimestamp,
+        },
+      },
+    });
+
     const newActivity = await dbClient.activity.create({
       data: {
         name: reqBody.name,
         count: reqBody.count,
-        timestamp: reqBody.timestamp || new Date().toISOString(),
+        timestamp: newActivityTimestamp,
       },
       select: {
         id: true,
@@ -65,13 +81,20 @@ export const logActivity = async (
       },
     });
 
+    const timeSince = lastActivity?.timestamp
+      ? formatDistance(lastActivity.timestamp, newActivity.timestamp, {
+          includeSeconds: true,
+          addSuffix: true,
+        })
+      : "never";
+
     const response = {
-      created: {
-        ...newActivity,
-      },
+      created: newActivity,
       last: {
         ...lastActivity,
+        since: timeSince,
       },
+      trend: `${activityTrend + 1} in last ${config.SUMMARY_WINDOW_DAYS} days`,
     };
 
     return {

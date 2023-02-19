@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "dependencies": {
     "@prisma/client": "^4.10.1",
+    "date-fns": "^2.29.3",
     "zod": "^3.20.6"
   },
   "devDependencies": {
@@ -16,5 +17,8 @@
   "volta": {
     "node": "18.14.1",
     "npm": "9.5.0"
+  },
+  "prisma": {
+    "schema": "prisma/schema.prisma"
   }
 }
