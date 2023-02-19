@@ -1,17 +1,22 @@
 service: activity-log
 frameworkVersion: "3"
 
+useDotenv: true
+
 provider:
   name: aws
   runtime: nodejs18.x
+  environment:
+    DATABASE_URL: ${env:DATABASE_URL}
+    SECRET: ${env:SECRET}
 
 functions:
-  hello:
-    handler: src/handler.hello
+  logActivity:
+    handler: src/handler.logActivity
     events:
       - httpApi:
           path: /
-          method: get
+          method: POST
 
 plugins:
   - serverless-esbuild

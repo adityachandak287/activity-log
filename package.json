@@ -5,11 +5,15 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
     "esbuild": "^0.16.17",
+    "prisma": "^4.10.1",
     "serverless-esbuild": "^1.38.0",
     "serverless-offline": "^12.0.4"
   },
   "volta": {
     "node": "18.14.1",
     "npm": "9.5.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.10.1"
   }
 }

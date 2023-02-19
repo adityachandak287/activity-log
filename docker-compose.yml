@@ -1,0 +1,20 @@
+version: "3"
+
+volumes:
+  activity_log_mysql_data:
+    driver: local
+
+services:
+  mysql:
+    container_name: activity-log-mysql
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_HOST=%
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=activity_log_local_db
+    ports:
+      - 3308:3306
+    volumes:
+      - "activity_log_mysql_data:/var/lib/mysql"
